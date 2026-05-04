@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  RallySnap
-//
-//  Created by Akbar Zaidan Rohman on 03/05/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
