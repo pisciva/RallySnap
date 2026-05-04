@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - Main Gallery Clip View
 struct GalleryClipView: View {
     @Binding var showCalendarView: Bool
     
@@ -13,12 +12,9 @@ struct GalleryClipView: View {
     }
 }
 
-// MARK: - List Mode View
 struct GalleryClipListView: View {
-    // State lokal agar halaman bisa refresh otomatis saat ada data dihapus
     @State private var localSessions: [Session] = dummySessions
     
-    // Mengelompokkan session berdasarkan tanggal secara otomatis
     var groupedSessions: [(String, [Session])] {
         let grouped = Dictionary(grouping: localSessions, by: { $0.date })
         return grouped.map { ($0.key, $0.value) }.sorted {
@@ -46,13 +42,11 @@ struct GalleryClipListView: View {
             .padding(.top)
         }
         .onAppear {
-            // Pastikan data selalu sinkron dengan database dummy pusat
             localSessions = dummySessions
         }
     }
 }
 
-// MARK: - Calendar Mode View
 struct GalleryCalendarModeView: View {
     @State private var monthOffset: Int = 0
     @State private var localSessions: [Session] = dummySessions
@@ -78,7 +72,6 @@ struct GalleryCalendarModeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Header: Month & Year + Navigation
                 HStack {
                     HStack(spacing: 8) {
                         Text(monthString(from: currentMonthDate))
@@ -105,7 +98,6 @@ struct GalleryCalendarModeView: View {
                 }
                 .padding(.horizontal, 20)
                 
-                // Calendar Grid
                 VStack(spacing: 8) {
                     HStack {
                         ForEach(weekdays, id: \.self) { day in
@@ -124,7 +116,6 @@ struct GalleryCalendarModeView: View {
                 }
                 .padding(.horizontal, 16)
                 
-                // Daily Session Details
                 dailySessionSection
             }
         }
@@ -133,7 +124,6 @@ struct GalleryCalendarModeView: View {
         }
     }
     
-    // View Cell untuk Tanggal
     @ViewBuilder
     private func calendarCell(_ value: DateValue) -> some View {
         VStack(spacing: 6) {
@@ -159,7 +149,6 @@ struct GalleryCalendarModeView: View {
         }
     }
     
-    // Section detail sesi di bawah kalender
     private var dailySessionSection: some View {
         let dailySessions = getSessions(for: selectedDate)
         
@@ -168,7 +157,6 @@ struct GalleryCalendarModeView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     let totalClips = dailySessions.reduce(0) { $0 + $1.clipCount }
                     
-                    // Header Clickable
                     NavigationLink(destination: GalleryDateDetailView(dateString: formattedDate(selectedDate), sessions: dailySessions)) {
                         HStack {
                             Text("\(dailySessions.count) sessions | \(totalClips) clips")
@@ -186,7 +174,6 @@ struct GalleryCalendarModeView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                    // Session Cards Clickable
                     ForEach(dailySessions) { session in
                         NavigationLink(destination: GalleryDateDetailView(dateString: formattedDate(selectedDate), sessions: dailySessions)) {
                             SessionCardView(session: session)
@@ -206,7 +193,6 @@ struct GalleryCalendarModeView: View {
         }
     }
     
-    // MARK: - Helpers
     func extractDates() -> [DateValue] {
         let calendar = Calendar.current
         let currentMonth = currentMonthDate
@@ -249,7 +235,6 @@ struct GalleryCalendarModeView: View {
     }
 }
 
-// MARK: - Date Section Component
 struct DateSection: View {
     let date: String
     let sessions: [Session]
@@ -282,7 +267,6 @@ struct DateSection: View {
     }
 }
 
-// Model bantu untuk Grid Kalender
 struct DateValue: Identifiable {
     var id = UUID().uuidString
     var day: Int

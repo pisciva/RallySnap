@@ -7,8 +7,6 @@ struct ClipCardView: View {
     
     @State private var isShowingPlayer = false
     @State private var isFavorite: Bool
-    
-    // State untuk Menu Actions
     @State private var showAddToAlbumSheet = false
     @State private var showNewAlbumAlert = false
     @State private var showDeleteConfirmation = false
@@ -45,7 +43,7 @@ struct ClipCardView: View {
         .onChange(of: clip.isFavorite) { newValue in
             isFavorite = newValue
         }
-        // TAMBAHAN: Sheet & Alert untuk Menu Titik Tiga
+
         .sheet(isPresented: $showAddToAlbumSheet) {
             addToAlbumSheetContent
                 .presentationDetents([.medium, .large])
@@ -146,7 +144,6 @@ struct ClipCardView: View {
         }
     }
     
-    // MARK: - Logic Functions
     private func dateTimeString(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy, hh:mm a"

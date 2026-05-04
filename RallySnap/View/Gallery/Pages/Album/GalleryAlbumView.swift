@@ -5,12 +5,12 @@ struct GalleryAlbumView: View {
     
     let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
     
-    // State untuk Rename Album
+    
     @State private var albumToRename: Album?
     @State private var showRenameAlert = false
     @State private var newAlbumName = ""
     
-    // State untuk Delete Album
+    
     @State private var albumToDelete: Album?
     @State private var showDeleteAlert = false
     
@@ -44,7 +44,7 @@ struct GalleryAlbumView: View {
                     }
                 }
                 .buttonStyle(PlainButtonStyle())
-                // FITUR HOLD (LONG PRESS) MENGGUNAKAN CONTEXT MENU
+                
                 .contextMenu {
                     Button(action: {
                         albumToRename = album
@@ -64,13 +64,13 @@ struct GalleryAlbumView: View {
             }
         }
         .padding(16)
-        // POPUP UNTUK RENAME ALBUM
+        
         .alert("Rename Album", isPresented: $showRenameAlert) {
             TextField("Album Name", text: $newAlbumName)
             Button("Cancel", role: .cancel) { newAlbumName = "" }
             Button("Save") { renameAlbum() }
         }
-        // POPUP UNTUK KONFIRMASI DELETE ALBUM
+        
         .alert("Delete Album", isPresented: $showDeleteAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Delete", role: .destructive) { deleteAlbum() }
@@ -79,16 +79,16 @@ struct GalleryAlbumView: View {
         }
     }
     
-    // MARK: - Logic Functions
+    
     
     private func renameAlbum() {
         guard let album = albumToRename, !newAlbumName.isEmpty else { return }
         
-        // Update di UI lokal
+        
         if let index = albums.firstIndex(where: { $0.id == album.id }) {
             albums[index].title = newAlbumName
         }
-        // Update di database dummy
+        
         if let dummyIndex = dummyAlbums.firstIndex(where: { $0.id == album.id }) {
             dummyAlbums[dummyIndex].title = newAlbumName
         }
@@ -98,9 +98,9 @@ struct GalleryAlbumView: View {
         guard let album = albumToDelete else { return }
         
         withAnimation {
-            // Hapus dari UI lokal
+            
             albums.removeAll { $0.id == album.id }
-            // Hapus dari database dummy
+            
             dummyAlbums.removeAll { $0.id == album.id }
         }
     }

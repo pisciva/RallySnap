@@ -4,8 +4,6 @@ struct SelectableClipRow: View {
     let clip: Clip
     @Binding var isSelectionMode: Bool
     @Binding var selectedClipIDs: Set<UUID>
-    
-    // Jalur Komunikasi Baru
     let onDelete: () -> Void
     let onToast: (String) -> Void
     
@@ -22,8 +20,8 @@ struct SelectableClipRow: View {
             
             ClipCardView(
                 clip: clip,
-                onDelete: onDelete, // Diteruskan
-                onToast: onToast    // Diteruskan
+                onDelete: onDelete,
+                onToast: onToast 
             )
             .allowsHitTesting(!isSelectionMode)
         }

@@ -1,10 +1,3 @@
-//
-//  ClipCard.swift
-//  tennis
-//
-//  Created by Albert Tandy Harison on 03/05/26.
-//
-
 import SwiftUI
 
 struct ClipCard: View {

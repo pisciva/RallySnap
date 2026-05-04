@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct GalleryFavoriteView: View {
-    // State lokal untuk menyimpan daftar klip favorit
     @State private var favoriteClips: [Clip] = []
     
-    // State untuk Toast Notification yang sudah disempurnakan (Statis Pinned)
     @State private var showToast = false
     @State private var toastMessage = ""
     
@@ -36,7 +34,6 @@ struct GalleryFavoriteView: View {
                                     },
                                     onToast: { message in
                                         displayToast(message: message)
-                                        // Refresh otomatis jika status favorit diubah
                                         refreshFavorites()
                                     }
                                 )
@@ -45,14 +42,12 @@ struct GalleryFavoriteView: View {
                         }
                     }
                 }
-                .padding(.bottom, 120) // Ruang ekstra agar tidak menabrak bottom tab bar
+                .padding(.bottom, 120)
             }
         }
-        // Refresh data setiap kali halaman ini dibuka
         .onAppear {
             refreshFavorites()
         }
-        // OVERLAY TOAST STATIS DI SINI
         .overlay(alignment: .top) {
             if showToast {
                 toastOverlay
@@ -60,7 +55,6 @@ struct GalleryFavoriteView: View {
         }
     }
     
-    // MARK: - Toast Overlay
     private var toastOverlay: some View {
         Text(toastMessage)
             .font(.system(size: 13, weight: .semibold, design: .rounded))
@@ -90,11 +84,7 @@ struct GalleryFavoriteView: View {
         }
     }
     
-    // MARK: - Logic Functions
-    
     private func refreshFavorites() {
-        // Tarik semua klip dari dummySessions, saring yang difavoritkan,
-        // lalu urutkan berdasarkan yang paling baru direkam
         let allFavorites = dummySessions
             .flatMap { $0.clips }
             .filter { $0.isFavorite }
@@ -107,19 +97,15 @@ struct GalleryFavoriteView: View {
     
     private func deleteSingleClip(_ clip: Clip) {
         withAnimation(.easeInOut(duration: 0.2)) {
-            // Hapus dari database dummy pusat
             for index in dummySessions.indices {
                 dummySessions[index].clips.removeAll { $0.id == clip.id }
             }
-            // Bersihkan session kosong jika ada
             dummySessions.removeAll { $0.clips.isEmpty }
             
-            // Hapus dari album jika klip ini juga ada di album
             for index in dummyAlbums.indices {
                 dummyAlbums[index].clips.removeAll { $0.id == clip.id }
             }
             
-            // Update UI lokal
             refreshFavorites()
         }
         displayToast(message: "Successfully deleted \(clip.title)")

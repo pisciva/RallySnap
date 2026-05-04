@@ -60,7 +60,7 @@ struct GalleryDateDetailView: View {
                                     clip: clip,
                                     isSelectionMode: $isSelectionMode,
                                     selectedClipIDs: $selectedClipIDs,
-                                    // MENANGKAP CALLBACK DARI KARTU:
+                                    
                                     onDelete: { deleteSingleClip(clip) },
                                     onToast: { message in displayToast(message: message) }
                                 )
@@ -143,7 +143,7 @@ struct GalleryDateDetailView: View {
         sessions.flatMap { $0.clips }.filter { selectedClipIDs.contains($0.id) }
     }
     
-    // MARK: - Logic Hapus SATU Klip dari Menu Kartu
+    
     private func deleteSingleClip(_ clip: Clip) {
         withAnimation(.easeInOut(duration: 0.2)) {
             for index in sessions.indices {
@@ -161,7 +161,7 @@ struct GalleryDateDetailView: View {
         displayToast(message: "Successfully deleted \(clip.title)")
     }
     
-    // MARK: - Logic Bottom Bar (Banyak Klip)
+    
     private func deleteSelectedClips() {
         let count = selectedClipIDs.count
         withAnimation(.easeInOut(duration: 0.2)) {

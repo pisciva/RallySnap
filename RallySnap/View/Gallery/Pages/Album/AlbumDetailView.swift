@@ -56,7 +56,7 @@ struct AlbumDetailView: View {
                             clip: clip,
                             isSelectionMode: $isSelectionMode,
                             selectedClipIDs: $selectedClipIDs,
-                            // PERBAIKAN: Menambahkan parameter yang diminta
+                            
                             onDelete: { deleteSingleClip(clip) },
                             onToast: { message in displayToast(message: message) }
                         )
@@ -147,13 +147,13 @@ struct AlbumDetailView: View {
         album.clips.filter { selectedClipIDs.contains($0.id) }
     }
     
-    // MARK: - Logic Hapus SATU Klip dari Menu Kartu
+    
     private func deleteSingleClip(_ clip: Clip) {
         withAnimation(.easeInOut(duration: 0.2)) {
-            // Hapus dari state lokal
+            
             album.clips.removeAll { $0.id == clip.id }
             
-            // Hapus dari dummyAlbums
+            
             if let albumIndex = dummyAlbums.firstIndex(where: { $0.id == album.id }) {
                 dummyAlbums[albumIndex].clips.removeAll { $0.id == clip.id }
             }
@@ -161,7 +161,7 @@ struct AlbumDetailView: View {
         displayToast(message: "Successfully deleted \(clip.title)")
     }
     
-    // MARK: - Logic Bottom Bar (Banyak Klip)
+
     private func deleteSelectedClips() {
         let count = selectedClipIDs.count
         withAnimation(.easeInOut(duration: 0.2)) {
@@ -179,18 +179,18 @@ struct AlbumDetailView: View {
     
     private func favoriteSelectedClips() {
         let isAllFavorited = selectedClips.allSatisfy { $0.isFavorite }
-        let newState = !isAllFavorited // Toggle statusnya
+        let newState = !isAllFavorited
         let count = selectedClipIDs.count
         
         withAnimation(.easeInOut(duration: 0.2)) {
-            // 1. Update data di UI lokal (Album yang sedang dibuka ini)
+            
             for cIndex in album.clips.indices {
                 if selectedClipIDs.contains(album.clips[cIndex].id) {
                     album.clips[cIndex].isFavorite = newState
                 }
             }
             
-            // 2. Update data di dummy utama agar tersimpan di kalender/galeri utama
+            a
             for sIndex in dummySessions.indices {
                 for cIndex in dummySessions[sIndex].clips.indices {
                     if selectedClipIDs.contains(dummySessions[sIndex].clips[cIndex].id) {
@@ -199,7 +199,7 @@ struct AlbumDetailView: View {
                 }
             }
             
-            // 3. Update data di semua Album lain di database dummy
+            
             for aIndex in dummyAlbums.indices {
                 for cIndex in dummyAlbums[aIndex].clips.indices {
                     if selectedClipIDs.contains(dummyAlbums[aIndex].clips[cIndex].id) {
