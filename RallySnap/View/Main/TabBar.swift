@@ -11,6 +11,7 @@ struct TabBarHiddenPreferenceKey: PreferenceKey {
 struct TabBar: View {
     @State private var selectedTab: Int = 0
     @State private var isHoldingCamera: Bool = false
+    @State private var isCameraPresented: Bool = false
     
     // MARK: - 2. State penentu sembunyi/muncul
     @State private var isTabBarHidden: Bool = false
@@ -22,6 +23,7 @@ struct TabBar: View {
             Group {
                 if selectedTab == 0 {
                     HomeView()
+                    
                 } else if selectedTab == 2 {
                     GalleryView()
                 }
@@ -48,7 +50,7 @@ struct TabBar: View {
                         selectedTab = 0
                     }
                     
-                    Button(action: { print("buka kamera") }) {
+                    Button(action: { isCameraPresented = true }) {
                         VStack(spacing: 4) {
                             Image("ball")
                                 .resizable()
@@ -102,6 +104,9 @@ struct TabBar: View {
         // MARK: - 4. Penerima Sinyal
         .onPreferenceChange(TabBarHiddenPreferenceKey.self) { isHidden in
             isTabBarHidden = isHidden
+        }
+        .fullScreenCover(isPresented: $isCameraPresented) {
+            CameraContainerView()
         }
     }
 }
