@@ -256,6 +256,8 @@
 				DEVELOPMENT_TEAM = 6LL856622C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -289,6 +291,8 @@
 				DEVELOPMENT_TEAM = 6LL856622C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

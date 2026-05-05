@@ -52,6 +52,7 @@ struct HomeView: View {
                         Spacer()
                         Text("View All").font(.system(size: 14, weight: .regular)).foregroundStyle(Color(red: 0.85, green: 1.0, blue: 0.31))
                     }.padding(.horizontal, 24)
+                    
                 }
             }
         }

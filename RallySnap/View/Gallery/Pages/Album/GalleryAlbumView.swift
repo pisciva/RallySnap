@@ -5,12 +5,9 @@ struct GalleryAlbumView: View {
     
     let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
     
-    
     @State private var albumToRename: Album?
     @State private var showRenameAlert = false
     @State private var newAlbumName = ""
-    
-    
     @State private var albumToDelete: Album?
     @State private var showDeleteAlert = false
     
@@ -27,7 +24,7 @@ struct GalleryAlbumView: View {
                         } else {
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(album.coverColor)
-                                .aspectRatio(1, contentMode: .fill)
+                                .aspectRatio(1, contentMode:     .fill)
                         }
                         
                         LinearGradient(

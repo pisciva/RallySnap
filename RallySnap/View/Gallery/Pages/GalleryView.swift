@@ -29,16 +29,16 @@ struct GalleryView: View {
                 }
                 
                 HStack {
-                    Button(action: {}) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
-                            .frame(width: 44, height: 44)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                    }
+//                    Button(action: {}) {
+//                        Image(systemName: "chevron.left")
+//                            .font(.system(size: 20, weight: .semibold))
+//                            .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+//                            .frame(width: 44, height: 44)
+//                            .background(.ultraThinMaterial)
+//                            .clipShape(Circle())
+//                    }
                     
-                    Spacer()
+//                    Spacer()
                     
                     HStack(spacing: 0) {
                         ForEach(0..<3) { index in
