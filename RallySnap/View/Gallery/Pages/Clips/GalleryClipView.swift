@@ -13,10 +13,19 @@ struct GalleryClipView: View {
 }
 
 struct GalleryClipListView: View {
+    @ObservedObject private var camera = CameraManager.shared  // ADD
     @State private var localSessions: [Session] = dummySessions
 
+    var allSessions: [Session] {
+        var sessions = dummySessions
+        if !camera.currentSession.clips.isEmpty {
+            sessions.append(camera.currentSession)
+        }
+        return sessions
+    }
+
     var groupedSessions: [(String, [Session])] {
-        let grouped = Dictionary(grouping: localSessions, by: { $0.date })
+        let grouped = Dictionary(grouping: allSessions, by: { $0.date })  // change dummySessions → allSessions
         return grouped.map { ($0.key, $0.value) }.sorted {
             let date1 = $0.1.first?.createdAt ?? .distantPast
             let date2 = $1.1.first?.createdAt ?? .distantPast
