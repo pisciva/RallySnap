@@ -25,7 +25,7 @@ struct SessionCardView: View {
             HStack(spacing: 4) {
                 Image(systemName: "calendar")
                     .font(.system(size: 12))
-                Text("\(session.date), \(session.time)")
+                Text("\(session.dateString), \(session.timeString)")
                     .font(.system(size: 12))
             }
             .foregroundColor(Color(red: 131/255, green: 131/255, blue: 131/255))
@@ -33,7 +33,7 @@ struct SessionCardView: View {
             HStack(spacing: 4) {
                 Image(systemName: "video.fill")
                     .font(.system(size: 12))
-                Text("\(session.clipCount) clips")
+                Text("\(session.clips.count) clips")
                     .font(.system(size: 12))
             }
             .foregroundColor(Color(red: 131/255, green: 131/255, blue: 131/255))
@@ -44,7 +44,7 @@ struct SessionCardView: View {
                         .fill(Color(red: 217/255, green: 1, blue: 78/255))
                         .frame(width: 24, height: 24)
                         .overlay(
-                            Image(systemName: mode == "A" ? "figure.tennis" : "applewatch")
+                            Image(systemName: mode == .auto ? "figure.tennis" : "applewatch")
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundColor(.black)
                         )
@@ -56,7 +56,7 @@ struct SessionCardView: View {
     
     private var videoStackSection: some View {
         ZStack(alignment: .trailing) {
-            let maxClips = min(session.clipCount, 6)
+            let maxClips = min(session.clips.count, 6)
             let baseWidth: CGFloat = 120
             let baseHeight: CGFloat = 80
             let offsetStep: CGFloat = 5

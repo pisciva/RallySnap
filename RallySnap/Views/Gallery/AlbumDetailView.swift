@@ -2,8 +2,8 @@ import SwiftUI
 
 struct AlbumDetailView: View {
     @State private var album: Album
-    @Environment(\.presentationMode) var presentationMode
-    
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var router: AppRouter
     @State var isSelectionMode = false
     @State var selectedClipIDs: Set<UUID> = []
     @StateObject private var toast = ToastManager()
@@ -19,7 +19,7 @@ struct AlbumDetailView: View {
             DetailTopBar(
                 title: album.title,
                 isSelectionMode: $isSelectionMode,
-                onBack: { presentationMode.wrappedValue.dismiss() },
+                onBack: { dismiss() },
                 onSelectionToggle: { selectedClipIDs.removeAll() },
                 showSelectButton: !album.clips.isEmpty
             )
@@ -56,8 +56,15 @@ struct AlbumDetailView: View {
             }
         }
         .navigationBarHidden(true)
-        .preference(key: TabBarHiddenPreferenceKey.self, value: isSelectionMode)
         .toastOverlay(message: toast.message, isShowing: $toast.isShowing)
+        .onChange(of: isSelectionMode) { oldValue, newValue in
+            withAnimation {
+                router.isTabBarHidden = newValue
+            }
+        }
+        .onDisappear {
+            router.isTabBarHidden = false
+        }
     }
     
     private var contentSection: some View {

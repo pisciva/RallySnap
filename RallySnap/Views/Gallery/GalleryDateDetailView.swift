@@ -3,7 +3,9 @@ import SwiftUI
 struct GalleryDateDetailView: View {
     let dateString: String
     @State private var sessions: [Session]
-    @Environment(\.presentationMode) var presentationMode
+    
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var router: AppRouter
     
     @State var isSelectionMode = false
     @State var selectedClipIDs: Set<UUID> = []
@@ -21,7 +23,7 @@ struct GalleryDateDetailView: View {
             DetailTopBar(
                 title: dateString,
                 isSelectionMode: $isSelectionMode,
-                onBack: { presentationMode.wrappedValue.dismiss() },
+                onBack: { dismiss() },
                 onSelectionToggle: { selectedClipIDs.removeAll() }
             )
             
@@ -36,7 +38,7 @@ struct GalleryDateDetailView: View {
                             selectedClipIDs: &selectedClipIDs,
                             isSelectionMode: &isSelectionMode
                         ) {
-                            if sessions.isEmpty { presentationMode.wrappedValue.dismiss() }
+                            if sessions.isEmpty { dismiss() }
                         }
                     },
                     onAddedToAlbum: { message in toast.show(message) },
@@ -58,7 +60,14 @@ struct GalleryDateDetailView: View {
         }
         .toastOverlay(message: toast.message, isShowing: $toast.isShowing)
         .navigationBarHidden(true)
-        .preference(key: TabBarHiddenPreferenceKey.self, value: isSelectionMode)
+        .onChange(of: isSelectionMode) { oldValue, newValue in
+            withAnimation {
+                router.isTabBarHidden = newValue
+            }
+        }
+        .onDisappear {
+            router.isTabBarHidden = false
+        }
     }
     
     private var contentSection: some View {
@@ -82,7 +91,7 @@ struct GalleryDateDetailView: View {
                                             clip,
                                             localSessions: &sessions
                                         ) {
-                                            if sessions.isEmpty { presentationMode.wrappedValue.dismiss() }
+                                            if sessions.isEmpty { dismiss() }
                                         }
                                     },
                                     onToast: { message in toast.show(message) }

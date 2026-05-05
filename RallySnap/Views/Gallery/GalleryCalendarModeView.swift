@@ -108,7 +108,7 @@ struct GalleryCalendarModeView: View {
 
     private var dailySessionSection: some View {
         let dailySessions = getSessions(for: selectedDate)
-        let totalClips = dailySessions.reduce(0) { $0 + $1.clipCount }
+        let totalClips = dailySessions.reduce(0) { $0 + $1.clips.count }
         let destination = GalleryDateDetailView(dateString: formattedDate(selectedDate), sessions: dailySessions)
 
         return Group {
@@ -171,7 +171,7 @@ struct GalleryCalendarModeView: View {
     }
 
     func getSessions(for date: Date) -> [Session] {
-        localSessions.filter { $0.date == formattedDate(date) }
+        localSessions.filter { $0.dateString == formattedDate(date) }
     }
 
     func formattedDate(_ date: Date) -> String {

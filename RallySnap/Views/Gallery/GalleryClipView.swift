@@ -25,7 +25,7 @@ struct GalleryClipListView: View {
     }
 
     var groupedSessions: [(String, [Session])] {
-        let grouped = Dictionary(grouping: allSessions, by: { $0.date })  // change dummySessions → allSessions
+        let grouped = Dictionary(grouping: allSessions, by: { $0.dateString })  // change dummySessions → allSessions
         return grouped.map { ($0.key, $0.value) }.sorted {
             let date1 = $0.1.first?.createdAt ?? .distantPast
             let date2 = $1.1.first?.createdAt ?? .distantPast

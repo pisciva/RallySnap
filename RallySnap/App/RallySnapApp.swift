@@ -11,10 +11,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct RallySnapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var router = AppRouter()
     
     var body: some Scene {
         WindowGroup {
             TabBar()
+                .environmentObject(router)
         }
     }
 }
