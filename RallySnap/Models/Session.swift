@@ -6,10 +6,6 @@ struct Session: Identifiable, Hashable, Equatable {
     let createdAt: Date
     var clips: [Clip]
     
-    var modes: [ClipMode] {
-        Array(Set(clips.map { $0.mode }))
-    }
-    
     var dateString: String {
         DateFormatter.sessionDate.string(from: createdAt)
     }
