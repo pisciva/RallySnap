@@ -3,11 +3,13 @@ import AVFoundation
 import Combine
 import SwiftUI
 
+
 extension Notification.Name {
     static let cameraNeedsOrientationUpdate = Notification.Name("cameraNeedsOrientationUpdate")
 }
 
 class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDelegate {
+    @Published var currentSession: Session = Session(title: "Session", createdAt: Date(), clips: [])
     @Published var session = AVCaptureSession()
     @Published var permissionDenied = false
     @Published var isRecording = false
@@ -19,6 +21,15 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
     private let movieFileOutput = AVCaptureMovieFileOutput() // The new output
     private var isConfigured = false
     private var neutralZoomFactor: CGFloat = 1.0
+    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let aiQueue = DispatchQueue(label: "com.rallysnap.ai")
+    
+    private lazy var aiService: ActionClassifierService = {
+        guard let service = ActionClassifierService() else {
+            fatalError("Failed to load actionClassifier model")
+        }
+        return service
+    }()
     
     static let shared = CameraManager()
     
@@ -30,11 +41,21 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setupSession()
+            aiService.onClipSaved = { clip in
+                DispatchQueue.main.async {
+                    self.currentSession.clips.append(clip)
+                }
+            }
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
                     if granted {
                         self.setupSession()
+                        self.aiService.onClipSaved = { clip in  // ← ADD THIS
+                            DispatchQueue.main.async {
+                                self.currentSession.clips.append(clip)
+                            }
+                        }
                     } else {
                         self.permissionDenied = true
                     }
@@ -108,6 +129,13 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
         // 3. Setup Movie File Output
         if session.canAddOutput(movieFileOutput) {
             session.addOutput(movieFileOutput)
+        }
+        
+        // Add video data output for AI
+        videoDataOutput.setSampleBufferDelegate(self, queue: aiQueue)
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        if session.canAddOutput(videoDataOutput) {
+            session.addOutput(videoDataOutput)
         }
         
         session.commitConfiguration()
@@ -270,7 +298,6 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
         // The video saved in the temp folder
         print("Successfully recorded video at: \(outputFileURL.absoluteString)")
         
-        //clip logic
     }
 }
 
@@ -353,5 +380,12 @@ class CameraPreviewController: UIViewController {
         case .landscapeRight: return .landscapeRight
         default: return .landscapeRight
         }
+    }
+}
+
+extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        aiService.processFrame(pixelBuffer)
     }
 }
