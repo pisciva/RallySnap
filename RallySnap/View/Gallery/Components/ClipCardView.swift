@@ -102,8 +102,8 @@ struct ClipCardView: View {
                 .foregroundColor(Color(white: 0.6))
             
             HStack(spacing: 8) {
-                Text(clip.mode == .auto ? "A" : "M")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                Image(systemName: clip.mode == .auto ? "figure.tennis" : "applewatch")
+                    .font(.system(size: 10, weight: .bold))
                     .foregroundColor(.black)
                     .frame(width: 20, height: 20)
                     .background(Color(red: 217/255, green: 255/255, blue: 78/255))

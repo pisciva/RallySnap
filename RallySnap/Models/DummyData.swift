@@ -10,6 +10,8 @@ var dummySessions: [Session] = [
             Clip(title: "Clip 1", recordedAt: Date.from(year: 2026, month: 4, day: 29, hour: 21, minute: 41), duration: 12, mode: .auto, videoURL: Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4")),
             Clip(title: "Clip 2", recordedAt: Date.from(year: 2026, month: 4, day: 29, hour: 21, minute: 43), duration: 8,  mode: .manual, videoURL: Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4")),
             Clip(title: "Clip 3", recordedAt: Date.from(year: 2026, month: 4, day: 29, hour: 21, minute: 45), duration: 15, mode: .auto, videoURL: Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4")),
+            Clip(title: "Clip 4", recordedAt: Date.from(year: 2026, month: 4, day: 29, hour: 21, minute: 47), duration: 15, mode: .manual, videoURL: Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4")),
+            Clip(title: "Clip 5", recordedAt: Date.from(year: 2026, month: 4, day: 29, hour: 21, minute: 48), duration: 15, mode: .auto, videoURL: Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4")),
         ]
     ),
     Session(

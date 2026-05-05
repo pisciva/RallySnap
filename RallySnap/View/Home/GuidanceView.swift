@@ -25,7 +25,7 @@ struct GuidanceView: View {
                 TabView(selection: $currentPage) {
                     
                     VStack(spacing: 20) {
-                        Image(systemName: "camera.viewfinder")
+                        Image(systemName: "camera.view  finder")
                             .font(.system(size: 80))
                             .foregroundColor(Color(red: 0.85, green: 1.0, blue: 0.31))
                         

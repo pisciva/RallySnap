@@ -6,12 +6,14 @@ struct SessionCardView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             infoSection
-            modeBadgesSection
+            
+            Spacer(minLength: 0)
+            
             videoStackSection
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .frame(height: 80)
+        .frame(minHeight: 100)
     }
     
     private var infoSection: some View {
@@ -35,32 +37,29 @@ struct SessionCardView: View {
                     .font(.system(size: 12))
             }
             .foregroundColor(Color(red: 131/255, green: 131/255, blue: 131/255))
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-    
-    private var modeBadgesSection: some View {
-        VStack(spacing: 5) {
-            ForEach(session.modes, id: \.self) { mode in
-                Circle()
-                    .fill(Color(red: 217/255, green: 1, blue: 78/255))
-                    .frame(width: 24, height: 24)
-                    .overlay(
-                        Text(mode)
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .foregroundColor(.black)
-                    )
+            
+            HStack(spacing: 6) {
+                ForEach(session.modes, id: \.self) { mode in
+                    Circle()
+                        .fill(Color(red: 217/255, green: 1, blue: 78/255))
+                        .frame(width: 24, height: 24)
+                        .overlay(
+                            Image(systemName: mode == "A" ? "figure.tennis" : "applewatch")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.black)
+                        )
+                }
             }
+            .padding(.top, 2)
         }
-        .frame(width: 28, alignment: .center)
     }
     
     private var videoStackSection: some View {
-        ZStack(alignment: .leading) {
+        ZStack(alignment: .trailing) {
             let maxClips = min(session.clipCount, 6)
-            let baseWidth: CGFloat = 80
-            let baseHeight: CGFloat = 55
-            let offsetStep: CGFloat = 10
+            let baseWidth: CGFloat = 120
+            let baseHeight: CGFloat = 80
+            let offsetStep: CGFloat = 5
             let scaleStep: CGFloat = 0.08
             
             ForEach(0..<maxClips, id: \.self) { index in
@@ -69,14 +68,13 @@ struct SessionCardView: View {
                 
                 VideoThumbnailView()
                     .frame(width: baseWidth * scale, height: baseHeight * scale)
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.black, lineWidth: 1))
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
                     .opacity(opacity)
-                    .offset(x: CGFloat(index) * offsetStep)
+                    .offset(x: -CGFloat(maxClips - 1 - index) * offsetStep)
                     .zIndex(Double(maxClips - index))
             }
         }
-        .frame(width: 90, height: 55, alignment: .leading)
-        .clipped()
+        .frame(width: 190, height: 80, alignment: .trailing)
     }
 }
