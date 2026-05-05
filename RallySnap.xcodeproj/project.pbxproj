@@ -253,10 +253,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5LCPB3DDWV;
+				DEVELOPMENT_TEAM = V69WZY26LB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "RallySnap uses your location to organize clips based on where they were recorded, so you can easily find and manage your tennis moments later.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize clips based on where they were recorded, so you can easily find and manage your tennis moments later.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -269,7 +271,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.marcello.RallySnap;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BelmiroTennisJadi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -288,10 +290,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5LCPB3DDWV;
+				DEVELOPMENT_TEAM = V69WZY26LB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "RallySnap uses your location to organize clips based on where they were recorded, so you can easily find and manage your tennis moments later.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize clips based on where they were recorded, so you can easily find and manage your tennis moments later.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -304,7 +308,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.marcello.RallySnap;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BelmiroTennisJadi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

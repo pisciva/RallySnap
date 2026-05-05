@@ -14,7 +14,7 @@ struct RallySnapApp: App {
     
     var body: some Scene {
         WindowGroup {
-            TabBar()
+            RootView()
         }
     }
 }
