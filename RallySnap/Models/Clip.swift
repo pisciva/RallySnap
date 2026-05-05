@@ -1,6 +1,6 @@
 import Foundation
 
-struct Clip: Identifiable {
+struct Clip: Identifiable, Hashable, Equatable {
     let id = UUID()
     let title: String
     let recordedAt: Date
@@ -11,6 +11,6 @@ struct Clip: Identifiable {
 }
 
 enum ClipMode: String {
-    case auto = "A"
-    case manual = "M"
+    case auto
+    case manual
 }
