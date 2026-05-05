@@ -3,11 +3,12 @@ import SwiftUI
 struct ClipSelectionBottomBar: View {
     @Binding var isSelectionMode: Bool
     @Binding var selectedClipIDs: Set<UUID>
+    
     let selectedClips: [Clip]
     let onDelete: () -> Void
     let onAddedToAlbum: (String) -> Void
     let onFavorite: () -> Void
-    let onSave: () -> Void // 1. Tambahan parameter onSave
+    let onSave: () -> Void
     
     @State private var showAddToAlbumSheet = false
     @State private var showNewAlbumAlert = false
@@ -19,9 +20,8 @@ struct ClipSelectionBottomBar: View {
         
         VStack {
             Spacer()
-            // 2. Gunakan spacing 0 agar pembagian ruangnya murni dari maxWidth: .infinity
+            
             HStack(spacing: 0) {
-                // TOMBOL 1: Add to Album
                 Button(action: {
                     if !selectedClipIDs.isEmpty {
                         showAddToAlbumSheet = true
@@ -30,15 +30,14 @@ struct ClipSelectionBottomBar: View {
                     VStack(spacing: 4) {
                         Image(systemName: "folder.badge.plus")
                             .font(.system(size: 20))
-                        Text("Album") // Teks disingkat sedikit agar lebih rapi
+                        Text("Album")
                             .font(.system(size: 10, weight: .medium))
                     }
-                    .frame(maxWidth: .infinity) // Membagi ruang sama rata
+                    .frame(maxWidth: .infinity)
                 }
                 .foregroundColor(selectedClipIDs.isEmpty ? .gray : .white)
                 .disabled(selectedClipIDs.isEmpty)
                 
-                // TOMBOL 2: Favorite / Unfavorite
                 Button(action: { onFavorite() }) {
                     VStack(spacing: 4) {
                         Image(systemName: isAllFavorited ? "heart.slash" : "heart")
@@ -51,7 +50,6 @@ struct ClipSelectionBottomBar: View {
                 .foregroundColor(selectedClipIDs.isEmpty ? .gray : (isAllFavorited ? Color(white: 0.8) : .white))
                 .disabled(selectedClipIDs.isEmpty)
                 
-                // TOMBOL 3: Save to Gallery (Baru)
                 Button(action: { onSave() }) {
                     VStack(spacing: 4) {
                         Image(systemName: "arrow.down.to.line")
@@ -64,7 +62,6 @@ struct ClipSelectionBottomBar: View {
                 .foregroundColor(selectedClipIDs.isEmpty ? .gray : .white)
                 .disabled(selectedClipIDs.isEmpty)
                 
-                // TOMBOL 4: Delete
                 Button(action: { showDeleteConfirmation = true }) {
                     VStack(spacing: 4) {
                         Image(systemName: "trash")
@@ -77,7 +74,7 @@ struct ClipSelectionBottomBar: View {
                 .foregroundColor(selectedClipIDs.isEmpty ? .gray : .red)
                 .disabled(selectedClipIDs.isEmpty)
             }
-            .padding(.horizontal, 16) // Padding dikurangi sedikit karena ada 4 tombol
+            .padding(.horizontal, 16)
             .padding(.vertical, 16)
             .background(Color(white: 0.1).ignoresSafeArea(edges: .bottom))
         }
@@ -102,7 +99,6 @@ struct ClipSelectionBottomBar: View {
         }
     }
     
-    // MARK: - Sheet Content Logic
     private var addToAlbumSheetContent: some View {
         NavigationView {
             ZStack {
@@ -115,9 +111,11 @@ struct ClipSelectionBottomBar: View {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
                                     .font(.system(size: 24))
+                                
                                 Text("New Album")
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                                     .foregroundColor(.white)
+                                
                                 Spacer()
                             }
                             .padding()
@@ -125,7 +123,9 @@ struct ClipSelectionBottomBar: View {
                             .cornerRadius(12)
                         }
                         
-                        Divider().background(Color.gray).padding(.vertical, 8)
+                        Divider()
+                            .background(Color.gray)
+                            .padding(.vertical, 8)
                         
                         if dummyAlbums.isEmpty {
                             Text("No existing albums.")
@@ -140,7 +140,9 @@ struct ClipSelectionBottomBar: View {
                                         Text(dummyAlbums[index].title)
                                             .font(.system(size: 16, weight: .medium, design: .rounded))
                                             .foregroundColor(.white)
+                                        
                                         Spacer()
+                                        
                                         Text("\(dummyAlbums[index].clips.count) clips")
                                             .font(.system(size: 12, design: .rounded))
                                             .foregroundColor(.gray)
@@ -166,9 +168,11 @@ struct ClipSelectionBottomBar: View {
         }
     }
     
+    // function to add clips to existing album
     private func addClipsToExistingAlbum(at index: Int) {
         let albumName = dummyAlbums[index].title
         let result = dummyAlbums[index].addUniqueClips(selectedClips)
+        
         finishAddingToAlbum()
         
         let message: String
@@ -183,19 +187,28 @@ struct ClipSelectionBottomBar: View {
         onAddedToAlbum(message)
     }
     
+    // function to create new album and add clips
     private func createNewAlbumAndAddClips() {
         if !newAlbumName.isEmpty {
             let name = newAlbumName
-            let newAlbum = Album(title: name, coverColor: Color(white: Double.random(in: 0.1...0.3)), clips: selectedClips)
+            let newAlbum = Album(
+                title: name,
+                coverColor: Color(white: Double.random(in: 0.1...0.3)),
+                clips: selectedClips
+            )
+            
             dummyAlbums.append(newAlbum)
             newAlbumName = ""
+            
             finishAddingToAlbum()
             onAddedToAlbum("Added \(selectedClips.count) clips to \(name)")
         }
     }
     
+    // function to reset state after adding to album
     private func finishAddingToAlbum() {
         showAddToAlbumSheet = false
+        
         withAnimation(.easeInOut(duration: 0.2)) {
             isSelectionMode = false
             selectedClipIDs.removeAll()

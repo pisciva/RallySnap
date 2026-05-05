@@ -43,7 +43,6 @@ struct ClipCardView: View {
         .onChange(of: clip.isFavorite) { newValue in
             isFavorite = newValue
         }
-
         .sheet(isPresented: $showAddToAlbumSheet) {
             addToAlbumSheetContent
                 .presentationDetents([.medium, .large])
@@ -56,9 +55,7 @@ struct ClipCardView: View {
         }
         .alert("Delete Clip", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                onDelete()
-            }
+            Button("Delete", role: .destructive) { onDelete() }
         } message: {
             Text("Are you sure you want to delete '\(clip.title)'? This action cannot be undone.")
         }
@@ -76,8 +73,10 @@ struct ClipCardView: View {
             
             VStack {
                 Spacer()
+                
                 HStack {
                     Spacer()
+                    
                     Text("\(Int(clip.duration))s")
                         .font(.system(size: 10, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
@@ -125,13 +124,17 @@ struct ClipCardView: View {
             Button(action: { showAddToAlbumSheet = true }) {
                 Label("Add to Album", systemImage: "folder.badge.plus")
             }
+            
             Button(action: toggleFavorite) {
                 Label(isFavorite ? "Unfavorite" : "Favorite", systemImage: isFavorite ? "heart.slash" : "heart")
             }
+            
             Button(action: saveToGallery) {
                 Label("Save to Gallery", systemImage: "arrow.down.to.line")
             }
+            
             Divider()
+            
             Button(role: .destructive, action: { showDeleteConfirmation = true }) {
                 Label("Delete", systemImage: "trash")
             }
@@ -144,59 +147,55 @@ struct ClipCardView: View {
         }
     }
     
-    private func dateTimeString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy, hh:mm a"
-        return formatter.string(from: date)
-    }
-    
-    private func toggleFavorite() {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { isFavorite.toggle() }
-        
-        for sIndex in dummySessions.indices {
-            if let cIndex = dummySessions[sIndex].clips.firstIndex(where: { $0.id == clip.id }) {
-                dummySessions[sIndex].clips[cIndex].isFavorite = isFavorite
-            }
-        }
-        for aIndex in dummyAlbums.indices {
-            if let cIndex = dummyAlbums[aIndex].clips.firstIndex(where: { $0.id == clip.id }) {
-                dummyAlbums[aIndex].clips[cIndex].isFavorite = isFavorite
-            }
-        }
-        onToast(isFavorite ? "Favorited \(clip.title)" : "Unfavorited \(clip.title)")
-    }
-    
-    private func saveToGallery() {
-        onToast("Successfully saved \(clip.title) to device")
-    }
-    
     private var addToAlbumSheetContent: some View {
         NavigationView {
             ZStack {
                 Color(white: 0.1).ignoresSafeArea()
+                
                 ScrollView {
                     VStack(spacing: 12) {
                         Button(action: { showNewAlbumAlert = true }) {
                             HStack {
-                                Image(systemName: "plus.circle.fill").foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255)).font(.system(size: 24))
-                                Text("New Album").font(.system(size: 16, weight: .medium, design: .rounded)).foregroundColor(.white)
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                                    .font(.system(size: 24))
+                                
+                                Text("New Album")
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white)
+                                
                                 Spacer()
                             }
-                            .padding().background(Color(white: 0.2)).cornerRadius(12)
+                            .padding()
+                            .background(Color(white: 0.2))
+                            .cornerRadius(12)
                         }
-                        Divider().background(Color.gray).padding(.vertical, 8)
+                        
+                        Divider()
+                            .background(Color.gray)
+                            .padding(.vertical, 8)
                         
                         if dummyAlbums.isEmpty {
-                            Text("No existing albums.").foregroundColor(.gray).padding(.top, 20)
+                            Text("No existing albums.")
+                                .foregroundColor(.gray)
+                                .padding(.top, 20)
                         } else {
                             ForEach(dummyAlbums.indices, id: \.self) { index in
                                 Button(action: { addClipToExistingAlbum(at: index) }) {
                                     HStack {
-                                        Text(dummyAlbums[index].title).font(.system(size: 16, weight: .medium, design: .rounded)).foregroundColor(.white)
+                                        Text(dummyAlbums[index].title)
+                                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                                            .foregroundColor(.white)
+                                        
                                         Spacer()
-                                        Text("\(dummyAlbums[index].clips.count) clips").font(.system(size: 12, design: .rounded)).foregroundColor(.gray)
+                                        
+                                        Text("\(dummyAlbums[index].clips.count) clips")
+                                            .font(.system(size: 12, design: .rounded))
+                                            .foregroundColor(.gray)
                                     }
-                                    .padding().background(Color(white: 0.15)).cornerRadius(12)
+                                    .padding()
+                                    .background(Color(white: 0.15))
+                                    .cornerRadius(12)
                                 }
                             }
                         }
@@ -208,16 +207,52 @@ struct ClipCardView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") { showAddToAlbumSheet = false }.foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                    Button("Cancel") { showAddToAlbumSheet = false }
+                        .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
                 }
             }
         }
     }
     
+    // function to format date
+    private func dateTimeString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy, hh:mm a"
+        return formatter.string(from: date)
+    }
+    
+    // function to toggle favorite
+    private func toggleFavorite() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            isFavorite.toggle()
+        }
+        
+        for sIndex in dummySessions.indices {
+            if let cIndex = dummySessions[sIndex].clips.firstIndex(where: { $0.id == clip.id }) {
+                dummySessions[sIndex].clips[cIndex].isFavorite = isFavorite
+            }
+        }
+        
+        for aIndex in dummyAlbums.indices {
+            if let cIndex = dummyAlbums[aIndex].clips.firstIndex(where: { $0.id == clip.id }) {
+                dummyAlbums[aIndex].clips[cIndex].isFavorite = isFavorite
+            }
+        }
+        
+        onToast(isFavorite ? "Favorited \(clip.title)" : "Unfavorited \(clip.title)")
+    }
+    
+    // function to save to gallery
+    private func saveToGallery() {
+        onToast("Successfully saved \(clip.title) to device")
+    }
+    
+    // function to add clip to existing album
     private func addClipToExistingAlbum(at index: Int) {
         let albumName = dummyAlbums[index].title
         let result = dummyAlbums[index].addUniqueClips([clip])
         showAddToAlbumSheet = false
+        
         if result.duplicate == 0 {
             onToast("Added \(clip.title) to \(albumName)")
         } else {
@@ -225,10 +260,16 @@ struct ClipCardView: View {
         }
     }
     
+    // function to create new album and add clip
     private func createNewAlbumAndAddClip() {
         if !newAlbumName.isEmpty {
             let name = newAlbumName
-            let newAlbum = Album(title: name, coverColor: Color(white: Double.random(in: 0.1...0.3)), clips: [clip])
+            let newAlbum = Album(
+                title: name,
+                coverColor: Color(white: Double.random(in: 0.1...0.3)),
+                clips: [clip]
+            )
+            
             dummyAlbums.append(newAlbum)
             newAlbumName = ""
             showAddToAlbumSheet = false

@@ -25,6 +25,7 @@ struct VideoThumbnailView: View {
         }
     }
     
+    // function to generate video thumbnail
     private func generateThumbnail() async {
         guard let url = videoURL ?? Bundle.main.url(forResource: "VideoTennis", withExtension: "mp4") else { return }
         
