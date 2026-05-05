@@ -1,8 +1,15 @@
 import SwiftUI
 
 struct GalleryFavoriteView: View {
-    @State private var favoriteClips: [Clip] = []
+    @EnvironmentObject private var viewModel: GalleryViewModel
     @StateObject private var toast = ToastManager()
+    
+    var favoriteClips: [Clip] {
+        viewModel.sessions
+            .flatMap { $0.clips }
+            .filter { $0.isFavorite }
+            .sorted { $0.recordedAt > $1.recordedAt }
+    }
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -30,7 +37,6 @@ struct GalleryFavoriteView: View {
                                     onDelete: { deleteFavoriteClip(clip) },
                                     onToast: { message in
                                         toast.show(message)
-                                        refreshFavorites()
                                     }
                                 )
                                 .padding(.horizontal, 16)
@@ -42,35 +48,10 @@ struct GalleryFavoriteView: View {
             }
         }
         .toastOverlay(message: toast.message, isShowing: $toast.isShowing)
-        .onAppear {
-            refreshFavorites()
-        }
-    }
-    
-    private func refreshFavorites() {
-        let allFavorites = dummySessions
-            .flatMap { $0.clips }
-            .filter { $0.isFavorite }
-            .sorted { $0.recordedAt > $1.recordedAt }
-        
-        withAnimation(.easeInOut(duration: 0.2)) {
-            favoriteClips = allFavorites
-        }
     }
     
     private func deleteFavoriteClip(_ clip: Clip) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            for index in dummySessions.indices {
-                dummySessions[index].clips.removeAll { $0.id == clip.id }
-            }
-            dummySessions.removeAll { $0.clips.isEmpty }
-            
-            for index in dummyAlbums.indices {
-                dummyAlbums[index].clips.removeAll { $0.id == clip.id }
-            }
-            
-            refreshFavorites()
-        }
+        viewModel.deleteClip(clip)
         toast.show("Successfully deleted \(clip.title)")
     }
 }

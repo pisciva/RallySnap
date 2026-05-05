@@ -5,7 +5,7 @@ struct GalleryView: View {
     @State private var showCalendarView = false
     @State private var showNewAlbumAlert = false
     @State private var newAlbumName = ""
-    @State private var albums: [Album] = dummyAlbums
+    @StateObject private var viewModel = GalleryViewModel()
     
     let segments = ["Clips", "Album", "Favorite"]
     
@@ -18,10 +18,13 @@ struct GalleryView: View {
                     VStack {
                         if selectedSegment == 0 {
                             GalleryClipView(showCalendarView: $showCalendarView)
+                                .environmentObject(viewModel)
                         } else if selectedSegment == 1 {
-                            GalleryAlbumView(albums: $albums)
+                            GalleryAlbumView()
+                                .environmentObject(viewModel)
                         } else {
                             GalleryFavoriteView()
+                                .environmentObject(viewModel)
                         }
                     }
                     .padding(.top, 80)
@@ -107,9 +110,6 @@ struct GalleryView: View {
                         .ignoresSafeArea(edges: .top)
                 )
             }
-            .onAppear {
-                albums = dummyAlbums
-            }
             .alert("New Album", isPresented: $showNewAlbumAlert) {
                 TextField("Album Name", text: $newAlbumName)
                 Button("Cancel", role: .cancel) {
@@ -117,7 +117,7 @@ struct GalleryView: View {
                 }
                 Button("Create") {
                     if !newAlbumName.isEmpty {
-                        albums.append(Album(title: newAlbumName, coverColor: Color(white: Double.random(in: 0.1...0.3)), clips: []))
+                        viewModel.albums.append(Album(title: newAlbumName, clips: []))
                         newAlbumName = ""
                     }
                 }

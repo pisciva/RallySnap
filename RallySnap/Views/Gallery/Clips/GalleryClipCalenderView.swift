@@ -1,8 +1,14 @@
 import SwiftUI
 
-struct GalleryCalendarModeView: View {
+struct DateValue: Identifiable {
+    var id = UUID().uuidString
+    var day: Int
+    var date: Date
+}
+
+struct GalleryClipCalendarView: View {
     @State private var monthOffset: Int = 0
-    @State private var localSessions: [Session] = dummySessions
+    @EnvironmentObject private var viewModel: GalleryViewModel
     @State private var selectedDate: Date = {
         var comps = DateComponents()
         comps.year = 2026
@@ -30,7 +36,6 @@ struct GalleryCalendarModeView: View {
                 dailySessionSection
             }
         }
-        .onAppear { localSessions = dummySessions }
     }
 
     private var monthHeader: some View {
@@ -109,7 +114,8 @@ struct GalleryCalendarModeView: View {
     private var dailySessionSection: some View {
         let dailySessions = getSessions(for: selectedDate)
         let totalClips = dailySessions.reduce(0) { $0 + $1.clips.count }
-        let destination = GalleryDateDetailView(dateString: formattedDate(selectedDate), sessions: dailySessions)
+        let destination = GalleryClipDetailView(dateString: formattedDate(selectedDate))
+            .environmentObject(viewModel)
 
         return Group {
             if !dailySessions.isEmpty {
@@ -171,7 +177,7 @@ struct GalleryCalendarModeView: View {
     }
 
     func getSessions(for date: Date) -> [Session] {
-        localSessions.filter { $0.dateString == formattedDate(date) }
+        viewModel.sessions.filter { $0.dateString == formattedDate(date) }
     }
 
     func formattedDate(_ date: Date) -> String {

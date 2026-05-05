@@ -4,6 +4,7 @@ struct SelectableClipRow: View {
     let clip: Clip
     @Binding var isSelectionMode: Bool
     @Binding var selectedClipIDs: Set<UUID>
+    
     let onDelete: () -> Void
     let onToast: (String) -> Void
     
@@ -14,14 +15,14 @@ struct SelectableClipRow: View {
             if isSelectionMode {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 22))
-                    .foregroundColor(isSelected ? Color(red: 217/255, green: 255/255, blue: 78/255) : .gray)
+                    .foregroundColor(isSelected ? Color(red: 217/255, green: 1.0, blue: 78/255) : .gray)
                     .padding(.trailing, 12)
             }
             
             ClipCardView(
                 clip: clip,
                 onDelete: onDelete,
-                onToast: onToast 
+                onToast: onToast
             )
             .allowsHitTesting(!isSelectionMode)
         }

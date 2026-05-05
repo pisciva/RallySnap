@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ClipSelectionBottomBar: View {
+    @EnvironmentObject private var viewModel: GalleryViewModel
+    
     @Binding var isSelectionMode: Bool
     @Binding var selectedClipIDs: Set<UUID>
     
@@ -15,6 +17,8 @@ struct ClipSelectionBottomBar: View {
     @State private var showDeleteConfirmation = false
     @State private var newAlbumName = ""
     
+    private let accentColor = Color(red: 217/255, green: 1.0, blue: 78/255)
+    
     var body: some View {
         let isAllFavorited = !selectedClips.isEmpty && selectedClips.allSatisfy { $0.isFavorite }
         
@@ -22,57 +26,27 @@ struct ClipSelectionBottomBar: View {
             Spacer()
             
             HStack(spacing: 0) {
-                Button(action: {
+                actionButton(icon: "folder.badge.plus", text: "Album", color: .white) {
                     if !selectedClipIDs.isEmpty {
                         showAddToAlbumSheet = true
                     }
-                }) {
-                    VStack(spacing: 4) {
-                        Image(systemName: "folder.badge.plus")
-                            .font(.system(size: 20))
-                        Text("Album")
-                            .font(.system(size: 10, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity)
                 }
-                .foregroundColor(selectedClipIDs.isEmpty ? .gray : .white)
-                .disabled(selectedClipIDs.isEmpty)
                 
-                Button(action: { onFavorite() }) {
-                    VStack(spacing: 4) {
-                        Image(systemName: isAllFavorited ? "heart.slash" : "heart")
-                            .font(.system(size: 20))
-                        Text(isAllFavorited ? "Unfavorite" : "Favorite")
-                            .font(.system(size: 10, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity)
+                actionButton(
+                    icon: isAllFavorited ? "heart.slash" : "heart",
+                    text: isAllFavorited ? "Unfavorite" : "Favorite",
+                    color: isAllFavorited ? Color(white: 0.8) : .white
+                ) {
+                    onFavorite()
                 }
-                .foregroundColor(selectedClipIDs.isEmpty ? .gray : (isAllFavorited ? Color(white: 0.8) : .white))
-                .disabled(selectedClipIDs.isEmpty)
                 
-                Button(action: { onSave() }) {
-                    VStack(spacing: 4) {
-                        Image(systemName: "arrow.down.to.line")
-                            .font(.system(size: 20))
-                        Text("Save")
-                            .font(.system(size: 10, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity)
+                actionButton(icon: "arrow.down.to.line", text: "Save", color: .white) {
+                    onSave()
                 }
-                .foregroundColor(selectedClipIDs.isEmpty ? .gray : .white)
-                .disabled(selectedClipIDs.isEmpty)
                 
-                Button(action: { showDeleteConfirmation = true }) {
-                    VStack(spacing: 4) {
-                        Image(systemName: "trash")
-                            .font(.system(size: 20))
-                        Text("Delete")
-                            .font(.system(size: 10, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity)
+                actionButton(icon: "trash", text: "Delete", color: .red) {
+                    showDeleteConfirmation = true
                 }
-                .foregroundColor(selectedClipIDs.isEmpty ? .gray : .red)
-                .disabled(selectedClipIDs.isEmpty)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
@@ -91,12 +65,24 @@ struct ClipSelectionBottomBar: View {
         }
         .alert("Delete Clips", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                onDelete()
-            }
+            Button("Delete", role: .destructive) { onDelete() }
         } message: {
             Text("Are you sure you want to delete \(selectedClipIDs.count) selected clips? This action cannot be undone.")
         }
+    }
+    
+    private func actionButton(icon: String, text: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                Text(text)
+                    .font(.system(size: 10, weight: .medium))
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .foregroundColor(selectedClipIDs.isEmpty ? .gray : color)
+        .disabled(selectedClipIDs.isEmpty)
     }
     
     private var addToAlbumSheetContent: some View {
@@ -109,7 +95,7 @@ struct ClipSelectionBottomBar: View {
                         Button(action: { showNewAlbumAlert = true }) {
                             HStack {
                                 Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                                    .foregroundColor(accentColor)
                                     .font(.system(size: 24))
                                 
                                 Text("New Album")
@@ -127,23 +113,21 @@ struct ClipSelectionBottomBar: View {
                             .background(Color.gray)
                             .padding(.vertical, 8)
                         
-                        if dummyAlbums.isEmpty {
+                        if viewModel.albums.isEmpty {
                             Text("No existing albums.")
                                 .foregroundColor(.gray)
                                 .padding(.top, 20)
                         } else {
-                            ForEach(dummyAlbums.indices, id: \.self) { index in
-                                Button(action: {
-                                    addClipsToExistingAlbum(at: index)
-                                }) {
+                            ForEach(viewModel.albums.indices, id: \.self) { index in
+                                Button(action: { addClipsToExistingAlbum(at: index) }) {
                                     HStack {
-                                        Text(dummyAlbums[index].title)
+                                        Text(viewModel.albums[index].title)
                                             .font(.system(size: 16, weight: .medium, design: .rounded))
                                             .foregroundColor(.white)
                                         
                                         Spacer()
                                         
-                                        Text("\(dummyAlbums[index].clips.count) clips")
+                                        Text("\(viewModel.albums[index].clips.count) clips")
                                             .font(.system(size: 12, design: .rounded))
                                             .foregroundColor(.gray)
                                     }
@@ -162,42 +146,36 @@ struct ClipSelectionBottomBar: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Cancel") { showAddToAlbumSheet = false }
-                        .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                        .foregroundColor(accentColor)
                 }
             }
         }
     }
     
-    // function to add clips to existing album
     private func addClipsToExistingAlbum(at index: Int) {
-        let albumName = dummyAlbums[index].title
-        let result = dummyAlbums[index].addUniqueClips(selectedClips)
+        let albumName = viewModel.albums[index].title
+        let alreadyExists = selectedClips.filter { viewModel.albums[index].clips.contains($0) }
+        let toAdd = selectedClips.filter { !viewModel.albums[index].clips.contains($0) }
         
+        selectedClips.forEach { viewModel.albums[index].addClip($0) }
         finishAddingToAlbum()
         
         let message: String
-        if result.duplicate == 0 {
-            message = "Added \(result.added) clips to \(albumName)"
-        } else if result.added == 0 {
-            message = "All \(result.duplicate) clips already exist in \(albumName)"
+        if alreadyExists.isEmpty {
+            message = "Added \(toAdd.count) clips to \(albumName)"
+        } else if toAdd.isEmpty {
+            message = "All \(alreadyExists.count) clips already exist in \(albumName)"
         } else {
-            message = "Added \(result.added) clips. \(result.duplicate) already exist"
+            message = "Added \(toAdd.count) clips. \(alreadyExists.count) already exist"
         }
         
         onAddedToAlbum(message)
     }
     
-    // function to create new album and add clips
     private func createNewAlbumAndAddClips() {
         if !newAlbumName.isEmpty {
             let name = newAlbumName
-            let newAlbum = Album(
-                title: name,
-                coverColor: Color(white: Double.random(in: 0.1...0.3)),
-                clips: selectedClips
-            )
-            
-            dummyAlbums.append(newAlbum)
+            viewModel.albums.append(Album(title: name, clips: selectedClips))
             newAlbumName = ""
             
             finishAddingToAlbum()
@@ -205,10 +183,8 @@ struct ClipSelectionBottomBar: View {
         }
     }
     
-    // function to reset state after adding to album
     private func finishAddingToAlbum() {
         showAddToAlbumSheet = false
-        
         withAnimation(.easeInOut(duration: 0.2)) {
             isSelectionMode = false
             selectedClipIDs.removeAll()

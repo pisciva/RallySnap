@@ -1,121 +1,111 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject private var viewModel: GalleryViewModel
+    @EnvironmentObject private var router: AppRouter
     @State private var showGuidance = false
-    @ObservedObject private var camera = CameraManager.shared
+    @StateObject private var toast = ToastManager()
     
-    /// All clips across the current session + dummy data, newest first.
     private var recentClips: [Clip] {
-        var all: [Clip] = camera.currentSession.clips
-        all.append(contentsOf: dummySessions.flatMap { $0.clips })
-        return all.sorted { $0.recordedAt > $1.recordedAt }
+        viewModel.sessions
+            .flatMap { $0.clips }
+            .sorted { $0.recordedAt > $1.recordedAt }
     }
     
     var body: some View {
-        
-        ZStack{
+        ZStack(alignment: .top) {
             Color.black.ignoresSafeArea()
-            ScrollView(showsIndicators: false){
+            
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerSection
+                    guidanceSection
+                    recentListSection
+                }
+                .padding(.bottom, 120)
+            }
+        }
+        .fullScreenCover(isPresented: $showGuidance) {
+            GuidanceView()
+        }
+        .toastOverlay(message: toast.message, isShowing: $toast.isShowing)
+    }
+    
+    private var headerSection: some View {
+        Text("Ready for a match?")
+            .font(.system(size: 22, weight: .bold, design: .rounded))
+            .foregroundColor(.white)
+            .padding(.horizontal, 16)
+            .padding(.top, 24)
+    }
+    
+    private var guidanceSection: some View {
+        Button(action: { showGuidance = true }) {
+            VStack(spacing: 0) {
+                Image("playtennis")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 160, alignment: .bottom)
+                    .clipped()
                 
-                VStack(alignment: .leading){
-                    Text("Ready for a match?").foregroundStyle(.white)                               .font(.system(size: 20, weight: .bold))
+                HStack {
+                    Text("Click For Guidance")
+                        .font(.system(size: 16, weight: .regular, design: .rounded))
+                        .foregroundColor(.white)
                     
-                    //MARK: Guidance Card
-                    Button {
-                        showGuidance = true
-                    } label: {
-                        VStack(spacing:0){
-                            Image("asset_homescreen_1")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(height: 220)
-                                .frame(height: 160, alignment: .bottom)
-                                .clipped()
-                            HStack{
-                                Text("Click For Guidance")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundStyle(.white)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundStyle(.white)
-                            }.padding()
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: 24))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 24)
-                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.white)
+                }
+                .padding()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(Color.white.opacity(0.3), lineWidth: 1)
+            )
+        }
+        .padding(.horizontal, 16)
+    }
+    
+    private var recentListSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Recently Added")
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                Button(action: {
+                    router.currentRoute = .gallery
+                }) {
+                    Text("View All")
+                        .font(.system(size: 14, weight: .regular, design: .rounded))
+                        .foregroundColor(Color(red: 217/255, green: 1.0, blue: 78/255))
+                }
+            }
+            .padding(.horizontal, 16)
+            
+            if recentClips.isEmpty {
+                Text("No clips yet — open camera and start playing!")
+                    .font(.system(size: 14, design: .rounded))
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 40)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(recentClips.prefix(5)) { clip in
+                        ClipCardView(
+                            clip: clip,
+                            onDelete: { viewModel.deleteClip(clip) },
+                            onToast: { message in toast.show(message) }
                         )
-                    }
-                }.frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 26)
-                    .padding(.bottom, 32)
-                
-                VStack(spacing: 16){
-                    
-                    HStack{
-                        Text("Recently Added").font(.system(size: 20, weight: .regular)).foregroundStyle(.white)
-                        Spacer()
-                        Text("View All").font(.system(size: 14, weight: .regular)).foregroundStyle(Color(red: 0.85, green: 1.0, blue: 0.31))
-                    }.padding(.horizontal, 24)
-                    if recentClips.isEmpty {
-                        Text("No clips yet — open camera and start playing!")
-                            .font(.system(size: 14))
-                            .foregroundStyle(.gray)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 24)
-                    } else {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(recentClips.prefix(10)) { clip in
-                                    RecentClipCard(clip: clip)
-                                }
-                            }
-                            .padding(.horizontal, 24)
-                        }
+                        .padding(.horizontal, 16)
                     }
                 }
             }
         }
-        
-        .fullScreenCover(isPresented: $showGuidance) {
-            GuidanceView()
-        }
     }
-}
-
-// MARK: - Recent Clip Card
-
-private struct RecentClipCard: View {
-    let clip: Clip
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            VideoThumbnailView(videoURL: clip.videoURL)
-                .frame(width: 160, height: 110)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-            
-            Text(clip.title)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-            
-            Text(formattedDate(clip.recordedAt))
-                .font(.system(size: 12))
-                .foregroundStyle(.gray)
-        }
-        .frame(width: 160)
-    }
-    
-    private func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, h:mm a"
-        return formatter.string(from: date)
-    }
-}
-
-#Preview {
-    HomeView()
 }

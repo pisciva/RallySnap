@@ -31,11 +31,11 @@ var dummySessions: [Session] = [
 ]
 
 var dummyAlbums: [Album] = [
-    Album(title: "Forehand", coverColor: Color(white: 0.2), clips: [
+    Album(title: "Forehand", clips: [
         dummySessions[0].clips[0],
         dummySessions[1].clips[0]
     ]),
-    Album(title: "Backhand", coverColor: Color(white: 0.15), clips: [
+    Album(title: "Backhand", clips: [
         dummySessions[0].clips[2],
         dummySessions[2].clips[0]
     ])

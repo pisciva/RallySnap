@@ -1,21 +1,34 @@
 import SwiftUI
 
-struct AlbumDetailView: View {
-    @State private var album: Album
+struct GalleryAlbumDetailView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var router: AppRouter
-    @State var isSelectionMode = false
-    @State var selectedClipIDs: Set<UUID> = []
+    @EnvironmentObject private var viewModel: GalleryViewModel
+
+    @State private var isSelectionMode = false
+    @State private var selectedClipIDs: Set<UUID> = []
     @StateObject private var toast = ToastManager()
-    
+
+    let albumID: UUID
+
     init(album: Album) {
-        _album = State(initialValue: album)
+        self.albumID = album.id
     }
-    
+
+    var album: Album {
+        viewModel.albums.first(where: { $0.id == albumID }) ?? Album(title: "", clips: [])
+    }
+
+    var selectedClips: [Clip] {
+        album.clips.filter { selectedClipIDs.contains($0.id) }
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
             Color.black.ignoresSafeArea()
-            contentSection
+
+            clipList
+            
             DetailTopBar(
                 title: album.title,
                 isSelectionMode: $isSelectionMode,
@@ -23,51 +36,41 @@ struct AlbumDetailView: View {
                 onSelectionToggle: { selectedClipIDs.removeAll() },
                 showSelectButton: !album.clips.isEmpty
             )
-            
+
             if isSelectionMode {
                 ClipSelectionBottomBar(
                     isSelectionMode: $isSelectionMode,
                     selectedClipIDs: $selectedClipIDs,
                     selectedClips: selectedClips,
                     onDelete: {
-                        deleteClipsFromAlbum(
-                            albumClips: &album.clips,
-                            albumID: album.id,
-                            selectedClipIDs: &selectedClipIDs,
-                            isSelectionMode: &isSelectionMode
-                        )
+                        viewModel.deleteClipsFromAlbum(ids: selectedClipIDs, albumID: albumID)
+                        selectedClipIDs.removeAll()
+                        isSelectionMode = false
                     },
                     onAddedToAlbum: { message in toast.show(message) },
                     onFavorite: {
-                        favoriteClipsInAlbum(
-                            albumClips: &album.clips,
-                            albumID: album.id,
-                            selectedClipIDs: &selectedClipIDs,
-                            isSelectionMode: &isSelectionMode
-                        )
+                        viewModel.toggleFavoriteClipsInAlbum(ids: selectedClipIDs, albumID: albumID)
+                        selectedClipIDs.removeAll()
+                        isSelectionMode = false
                     },
                     onSave: {
-                        saveSelectedClips(
-                            selectedClipIDs: &selectedClipIDs,
-                            isSelectionMode: &isSelectionMode
-                        )
+                        selectedClipIDs.removeAll()
+                        isSelectionMode = false
                     }
                 )
             }
         }
         .navigationBarHidden(true)
         .toastOverlay(message: toast.message, isShowing: $toast.isShowing)
-        .onChange(of: isSelectionMode) { oldValue, newValue in
-            withAnimation {
-                router.isTabBarHidden = newValue
-            }
+        .onChange(of: isSelectionMode) { _, newValue in
+            withAnimation { router.isTabBarHidden = newValue }
         }
         .onDisappear {
             router.isTabBarHidden = false
         }
     }
-    
-    private var contentSection: some View {
+
+    private var clipList: some View {
         ScrollView {
             VStack(spacing: 0) {
                 if album.clips.isEmpty {
@@ -82,11 +85,7 @@ struct AlbumDetailView: View {
                             isSelectionMode: $isSelectionMode,
                             selectedClipIDs: $selectedClipIDs,
                             onDelete: {
-                                deleteSingleClipFromAlbum(
-                                    clip,
-                                    albumClips: &album.clips,
-                                    albumID: album.id
-                                )
+                                viewModel.deleteClipFromAlbum(clip, albumID: albumID)
                             },
                             onToast: { message in toast.show(message) }
                         )
@@ -96,15 +95,5 @@ struct AlbumDetailView: View {
             .padding(.top, 80)
             .padding(.bottom, isSelectionMode ? 180 : 120)
         }
-    }
-    
-    private var selectedClips: [Clip] {
-        album.clips.filter { selectedClipIDs.contains($0.id) }
-    }
-}
-
-extension AlbumDetailView: ClipActionHandler {
-    func displayToast(message: String) {
-        toast.show(message)
     }
 }

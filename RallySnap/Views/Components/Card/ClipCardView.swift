@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ClipCardView: View {
+    @EnvironmentObject private var viewModel: GalleryViewModel
+    
     let clip: Clip
     let onDelete: () -> Void
     let onToast: (String) -> Void
@@ -21,9 +23,7 @@ struct ClipCardView: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Button(action: {
-                isShowingPlayer = true
-            }) {
+            Button(action: { isShowingPlayer = true }) {
                 HStack(spacing: 16) {
                     thumbnailSection
                     infoSection
@@ -38,7 +38,8 @@ struct ClipCardView: View {
         .padding(.vertical, 8)
         .background(Color.black)
         .fullScreenCover(isPresented: $isShowingPlayer) {
-            ClipPlayerView(clip: clip)
+            ClipPlayerView(clip: clip, source: .none)
+                .environmentObject(viewModel)
         }
         .onChange(of: clip.isFavorite) { newValue in
             isFavorite = newValue
@@ -73,10 +74,8 @@ struct ClipCardView: View {
             
             VStack {
                 Spacer()
-                
                 HStack {
                     Spacer()
-                    
                     Text("\(Int(clip.duration))s")
                         .font(.system(size: 10, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
@@ -106,7 +105,7 @@ struct ClipCardView: View {
                     .font(.system(size: 10, weight: .bold))
                     .foregroundColor(.black)
                     .frame(width: 20, height: 20)
-                    .background(Color(red: 217/255, green: 255/255, blue: 78/255))
+                    .background(Color(red: 217/255, green: 1.0, blue: 78/255))
                     .clipShape(Circle())
                 
                 if isFavorite {
@@ -157,7 +156,7 @@ struct ClipCardView: View {
                         Button(action: { showNewAlbumAlert = true }) {
                             HStack {
                                 Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                                    .foregroundColor(Color(red: 217/255, green: 1.0, blue: 78/255))
                                     .font(.system(size: 24))
                                 
                                 Text("New Album")
@@ -175,21 +174,21 @@ struct ClipCardView: View {
                             .background(Color.gray)
                             .padding(.vertical, 8)
                         
-                        if dummyAlbums.isEmpty {
+                        if viewModel.albums.isEmpty {
                             Text("No existing albums.")
                                 .foregroundColor(.gray)
                                 .padding(.top, 20)
                         } else {
-                            ForEach(dummyAlbums.indices, id: \.self) { index in
+                            ForEach(viewModel.albums.indices, id: \.self) { index in
                                 Button(action: { addClipToExistingAlbum(at: index) }) {
                                     HStack {
-                                        Text(dummyAlbums[index].title)
+                                        Text(viewModel.albums[index].title)
                                             .font(.system(size: 16, weight: .medium, design: .rounded))
                                             .foregroundColor(.white)
                                         
                                         Spacer()
                                         
-                                        Text("\(dummyAlbums[index].clips.count) clips")
+                                        Text("\(viewModel.albums[index].clips.count) clips")
                                             .font(.system(size: 12, design: .rounded))
                                             .foregroundColor(.gray)
                                     }
@@ -208,69 +207,48 @@ struct ClipCardView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Cancel") { showAddToAlbumSheet = false }
-                        .foregroundColor(Color(red: 217/255, green: 255/255, blue: 78/255))
+                        .foregroundColor(Color(red: 217/255, green: 1.0, blue: 78/255))
                 }
             }
         }
     }
     
-    // function to format date
     private func dateTimeString(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy, hh:mm a"
         return formatter.string(from: date)
     }
     
-    // function to toggle favorite
     private func toggleFavorite() {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
             isFavorite.toggle()
         }
-        
-        for sIndex in dummySessions.indices {
-            if let cIndex = dummySessions[sIndex].clips.firstIndex(where: { $0.id == clip.id }) {
-                dummySessions[sIndex].clips[cIndex].isFavorite = isFavorite
-            }
-        }
-        
-        for aIndex in dummyAlbums.indices {
-            if let cIndex = dummyAlbums[aIndex].clips.firstIndex(where: { $0.id == clip.id }) {
-                dummyAlbums[aIndex].clips[cIndex].isFavorite = isFavorite
-            }
-        }
-        
+        viewModel.toggleFavoriteClips(ids: [clip.id])
         onToast(isFavorite ? "Favorited \(clip.title)" : "Unfavorited \(clip.title)")
     }
     
-    // function to save to gallery
     private func saveToGallery() {
         onToast("Successfully saved \(clip.title) to device")
     }
     
-    // function to add clip to existing album
     private func addClipToExistingAlbum(at index: Int) {
-        let albumName = dummyAlbums[index].title
-        let result = dummyAlbums[index].addUniqueClips([clip])
+        let albumName = viewModel.albums[index].title
+        let alreadyExists = viewModel.albums[index].clips.contains(clip)
+        
+        viewModel.albums[index].addClip(clip)
         showAddToAlbumSheet = false
         
-        if result.duplicate == 0 {
-            onToast("Added \(clip.title) to \(albumName)")
-        } else {
+        if alreadyExists {
             onToast("\(clip.title) already exists in \(albumName)")
+        } else {
+            onToast("Added \(clip.title) to \(albumName)")
         }
     }
     
-    // function to create new album and add clip
     private func createNewAlbumAndAddClip() {
         if !newAlbumName.isEmpty {
             let name = newAlbumName
-            let newAlbum = Album(
-                title: name,
-                coverColor: Color(white: Double.random(in: 0.1...0.3)),
-                clips: [clip]
-            )
-            
-            dummyAlbums.append(newAlbum)
+            viewModel.albums.append(Album(title: name, clips: [clip]))
             newAlbumName = ""
             showAddToAlbumSheet = false
             onToast("Added \(clip.title) to \(name)")

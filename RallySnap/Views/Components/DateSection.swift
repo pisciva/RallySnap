@@ -4,12 +4,13 @@ struct DateSection: View {
 
     let date: String
     let sessions: [Session]
+    @EnvironmentObject private var viewModel: GalleryViewModel
 
     private let accent = Color(red: 217/255, green: 255/255, blue: 78/255)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            NavigationLink(destination: GalleryDateDetailView(dateString: date, sessions: sessions)) {
+            NavigationLink(destination: GalleryClipDetailView(dateString: date).environmentObject(viewModel)) {
                 HStack {
                     Text(date)
                         .font(.system(size: 24, weight: .semibold, design: .rounded))
@@ -25,7 +26,7 @@ struct DateSection: View {
             .buttonStyle(PlainButtonStyle())
 
             ForEach(sessions) { session in
-                NavigationLink(destination: GalleryDateDetailView(dateString: date, sessions: sessions)) {
+                NavigationLink(destination: GalleryClipDetailView(dateString: date).environmentObject(viewModel)) {
                     SessionCardView(session: session)
                 }
                 .buttonStyle(PlainButtonStyle())

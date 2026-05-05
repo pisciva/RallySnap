@@ -10,9 +10,22 @@
 		54E9946D2FA7A277003BCD9F /* RallySnap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RallySnap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5428709F2FAA833900892772 /* Exceptions for "RallySnap" folder in "RallySnap" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 54E9946C2FA7A277003BCD9F /* RallySnap */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		54E9946F2FA7A277003BCD9F /* RallySnap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5428709F2FAA833900892772 /* Exceptions for "RallySnap" folder in "RallySnap" target */,
+			);
 			path = RallySnap;
 			sourceTree = "<group>";
 		};
@@ -256,7 +269,9 @@
 				DEVELOPMENT_TEAM = 6LL856622C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RallySnap/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize sessions by place.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -291,7 +306,9 @@
 				DEVELOPMENT_TEAM = 6LL856622C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RallySnap/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize sessions by place.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

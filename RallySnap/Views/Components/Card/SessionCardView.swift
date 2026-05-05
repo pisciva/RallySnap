@@ -4,11 +4,9 @@ struct SessionCardView: View {
     let session: Session
     
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
+        HStack(spacing: 12) {
             infoSection
-            
-            Spacer(minLength: 0)
-            
+            Spacer()
             videoStackSection
         }
         .padding(.horizontal, 16)
@@ -28,7 +26,7 @@ struct SessionCardView: View {
                 Text("\(session.dateString), \(session.timeString)")
                     .font(.system(size: 12))
             }
-            .foregroundColor(Color(red: 131/255, green: 131/255, blue: 131/255))
+            .foregroundColor(.gray)
             
             HStack(spacing: 4) {
                 Image(systemName: "video.fill")
@@ -36,45 +34,53 @@ struct SessionCardView: View {
                 Text("\(session.clips.count) clips")
                     .font(.system(size: 12))
             }
-            .foregroundColor(Color(red: 131/255, green: 131/255, blue: 131/255))
+            .foregroundColor(.gray)
             
             HStack(spacing: 6) {
-                ForEach(session.modes, id: \.self) { mode in
-                    Circle()
-                        .fill(Color(red: 217/255, green: 1, blue: 78/255))
-                        .frame(width: 24, height: 24)
-                        .overlay(
-                            Image(systemName: mode == .auto ? "figure.tennis" : "applewatch")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(.black)
-                        )
+                let hasAuto = session.clips.contains { $0.mode == .auto }
+                let hasManual = session.clips.contains { $0.mode == .manual }
+                
+                if hasAuto {
+                    modeIcon(systemName: "figure.tennis")
+                }
+                
+                if hasManual {
+                    modeIcon(systemName: "applewatch")
                 }
             }
-            .padding(.top, 2)
+            .padding(.top, 4)
         }
     }
     
     private var videoStackSection: some View {
         ZStack(alignment: .trailing) {
             let maxClips = min(session.clips.count, 6)
-            let baseWidth: CGFloat = 120
-            let baseHeight: CGFloat = 80
-            let offsetStep: CGFloat = 5
-            let scaleStep: CGFloat = 0.08
             
             ForEach(0..<maxClips, id: \.self) { index in
-                let scale = 1.0 - CGFloat(index) * scaleStep
-                let opacity = 1.0 - Double(index) * 0.18
+                let scale = 1.0 - (CGFloat(index) * 0.08)
+                let opacity = 1.0 - (Double(index) * 0.18)
+                let xOffset = -CGFloat(maxClips - 1 - index) * 5
                 
                 VideoThumbnailView()
-                    .frame(width: baseWidth * scale, height: baseHeight * scale)
+                    .frame(width: 120 * scale, height: 80 * scale)
                     .cornerRadius(8)
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
                     .opacity(opacity)
-                    .offset(x: -CGFloat(maxClips - 1 - index) * offsetStep)
+                    .offset(x: xOffset)
                     .zIndex(Double(maxClips - index))
             }
         }
         .frame(width: 190, height: 80, alignment: .trailing)
+    }
+    
+    private func modeIcon(systemName: String) -> some View {
+        Circle()
+            .fill(Color(red: 217/255, green: 1.0, blue: 78/255))
+            .frame(width: 24, height: 24)
+            .overlay(
+                Image(systemName: systemName)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.black)
+            )
     }
 }

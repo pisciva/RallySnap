@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct GalleryAlbumView: View {
-    @Binding var albums: [Album]
-    
     let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
     
     @State private var albumToRename: Album?
@@ -10,21 +8,22 @@ struct GalleryAlbumView: View {
     @State private var newAlbumName = ""
     @State private var albumToDelete: Album?
     @State private var showDeleteAlert = false
+    @EnvironmentObject private var viewModel: GalleryViewModel
     
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
-            ForEach(albums) { album in
-                NavigationLink(destination: AlbumDetailView(album: album)) {
+            ForEach(viewModel.albums) { album in
+                NavigationLink(destination: GalleryAlbumDetailView(album: album).environmentObject(viewModel)) {
                     ZStack(alignment: .bottomLeading) {
-                        if let videoURL = album.latestClipURL {
+                        if let videoURL = album.clips.max(by: { $0.recordedAt < $1.recordedAt })?.videoURL {
                             VideoThumbnailView(videoURL: videoURL)
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 .aspectRatio(1, contentMode: .fill)
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                         } else {
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(album.coverColor)
-                                .aspectRatio(1, contentMode:     .fill)
+                                .fill(Color(white: 0.2))
+                                .aspectRatio(1, contentMode: .fill)
                         }
                         
                         LinearGradient(
@@ -76,29 +75,15 @@ struct GalleryAlbumView: View {
         }
     }
     
-    
-    
     private func renameAlbum() {
-        guard let album = albumToRename, !newAlbumName.isEmpty else { return }
-        
-        
-        if let index = albums.firstIndex(where: { $0.id == album.id }) {
-            albums[index].title = newAlbumName
-        }
-        
-        if let dummyIndex = dummyAlbums.firstIndex(where: { $0.id == album.id }) {
-            dummyAlbums[dummyIndex].title = newAlbumName
-        }
+        guard let album = albumToRename else { return }
+        viewModel.renameAlbum(album, newTitle: newAlbumName)
     }
-    
+
     private func deleteAlbum() {
         guard let album = albumToDelete else { return }
-        
         withAnimation {
-            
-            albums.removeAll { $0.id == album.id }
-            
-            dummyAlbums.removeAll { $0.id == album.id }
+            viewModel.deleteAlbum(album)
         }
     }
 }
