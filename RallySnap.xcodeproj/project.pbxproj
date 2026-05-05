@@ -10,22 +10,9 @@
 		54E9946D2FA7A277003BCD9F /* RallySnap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RallySnap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		5428709F2FAA833900892772 /* Exceptions for "RallySnap" folder in "RallySnap" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 54E9946C2FA7A277003BCD9F /* RallySnap */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		54E9946F2FA7A277003BCD9F /* RallySnap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				5428709F2FAA833900892772 /* Exceptions for "RallySnap" folder in "RallySnap" target */,
-			);
 			path = RallySnap;
 			sourceTree = "<group>";
 		};
