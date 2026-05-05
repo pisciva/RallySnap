@@ -14,7 +14,7 @@ struct GalleryCalendarModeView: View {
     private let weekdays = ["S", "M", "T", "W", "T", "F", "S"]
     private let accent = Color(red: 217/255, green: 255/255, blue: 78/255)
 
-    var currentMonthDate: Date {
+    private var currentMonthDate: Date {
         var comps = DateComponents()
         comps.year = 2026
         comps.month = 4
