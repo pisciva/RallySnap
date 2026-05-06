@@ -30,7 +30,8 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
     private let aiQueue = DispatchQueue(label: "com.rallysnap.ai")
 
     // AI service loaded asynchronously on a background thread to avoid blocking main/launch
-    private var aiService: ActionClassifierService?
+    // Expose the AI service so the Watch connectivity manager can request manual clips.
+    private(set) var aiService: ActionClassifierService?
 
     static let shared = CameraManager()
 
@@ -55,7 +56,13 @@ class CameraManager: NSObject, ObservableObject, AVCaptureFileOutputRecordingDel
 
     private func wireCallbacks(_ service: ActionClassifierService) {
         service.onClipSaved = { clip in
-            DispatchQueue.main.async { self.currentSession.clips.append(clip) }
+            DispatchQueue.main.async {
+                // Reassign instead of mutating to guarantee @Published fires.
+                var updated = self.currentSession
+                updated.clips.append(clip)
+                self.currentSession = updated
+                print("📁 clip added to currentSession (total clips: \(updated.clips.count))")
+            }
         }
         service.onPredictionResult = { label, confidence in
             DispatchQueue.main.async {

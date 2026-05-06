@@ -6,13 +6,18 @@ struct GalleryClipDetailView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var router: AppRouter
     @EnvironmentObject private var viewModel: GalleryViewModel
+    @ObservedObject private var camera = CameraManager.shared
 
     @State private var isSelectionMode = false
     @State private var selectedClipIDs: Set<UUID> = []
     @StateObject private var toast = ToastManager()
 
     var sessions: [Session] {
-        viewModel.sessions.filter { $0.dateString == dateString }
+        var all = viewModel.sessions
+        if !camera.currentSession.clips.isEmpty {
+            all.append(camera.currentSession)
+        }
+        return all.filter { $0.dateString == dateString }
     }
 
     var selectedClips: [Clip] {

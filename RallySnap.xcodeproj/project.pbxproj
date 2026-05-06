@@ -6,19 +6,73 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2AA6F6382FAAD2E9005805D5 /* RallySnap Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 380CC3C22FAABE0A00D5CB37 /* RallySnap Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2AA6F6392FAAD2E9005805D5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 54E994652FA7A277003BCD9F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 380CC3C12FAABE0A00D5CB37;
+			remoteInfo = "RallySnap Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		380CC3BD2FAABD8000D5CB37 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				2AA6F6382FAAD2E9005805D5 /* RallySnap Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		380CC3C22FAABE0A00D5CB37 /* RallySnap Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RallySnap Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E9946D2FA7A277003BCD9F /* RallySnap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RallySnap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2AA6F6362FAAD07D005805D5 /* Exceptions for "RallySnap" folder in "RallySnap" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 54E9946C2FA7A277003BCD9F /* RallySnap */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		380CC3C32FAABE0A00D5CB37 /* RallySnap Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "RallySnap Watch App";
+			sourceTree = "<group>";
+		};
 		54E9946F2FA7A277003BCD9F /* RallySnap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2AA6F6362FAAD07D005805D5 /* Exceptions for "RallySnap" folder in "RallySnap" target */,
+			);
 			path = RallySnap;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		380CC3BF2FAABE0A00D5CB37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		54E9946A2FA7A277003BCD9F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,10 +83,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2AA6F6372FAAD2E9005805D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		54E994642FA7A277003BCD9F = {
 			isa = PBXGroup;
 			children = (
 				54E9946F2FA7A277003BCD9F /* RallySnap */,
+				380CC3C32FAABE0A00D5CB37 /* RallySnap Watch App */,
+				2AA6F6372FAAD2E9005805D5 /* Frameworks */,
 				54E9946E2FA7A277003BCD9F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				54E9946D2FA7A277003BCD9F /* RallySnap.app */,
+				380CC3C22FAABE0A00D5CB37 /* RallySnap Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +112,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		380CC3C12FAABE0A00D5CB37 /* RallySnap Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 380CC3CA2FAABE0B00D5CB37 /* Build configuration list for PBXNativeTarget "RallySnap Watch App" */;
+			buildPhases = (
+				380CC3BE2FAABE0A00D5CB37 /* Sources */,
+				380CC3BF2FAABE0A00D5CB37 /* Frameworks */,
+				380CC3C02FAABE0A00D5CB37 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				380CC3C32FAABE0A00D5CB37 /* RallySnap Watch App */,
+			);
+			name = "RallySnap Watch App";
+			packageProductDependencies = (
+			);
+			productName = "RallySnap Watch App";
+			productReference = 380CC3C22FAABE0A00D5CB37 /* RallySnap Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 		54E9946C2FA7A277003BCD9F /* RallySnap */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 54E994782FA7A278003BCD9F /* Build configuration list for PBXNativeTarget "RallySnap" */;
@@ -55,10 +141,12 @@
 				54E994692FA7A277003BCD9F /* Sources */,
 				54E9946A2FA7A277003BCD9F /* Frameworks */,
 				54E9946B2FA7A277003BCD9F /* Resources */,
+				380CC3BD2FAABD8000D5CB37 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2AA6F63A2FAAD2E9005805D5 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				54E9946F2FA7A277003BCD9F /* RallySnap */,
@@ -80,6 +168,9 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					380CC3C12FAABE0A00D5CB37 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 					54E9946C2FA7A277003BCD9F = {
 						CreatedOnToolsVersion = 26.4.1;
 					};
@@ -100,11 +191,19 @@
 			projectRoot = "";
 			targets = (
 				54E9946C2FA7A277003BCD9F /* RallySnap */,
+				380CC3C12FAABE0A00D5CB37 /* RallySnap Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		380CC3C02FAABE0A00D5CB37 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		54E9946B2FA7A277003BCD9F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +214,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		380CC3BE2FAABE0A00D5CB37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		54E994692FA7A277003BCD9F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +230,81 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		2AA6F63A2FAAD2E9005805D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 380CC3C12FAABE0A00D5CB37 /* RallySnap Watch App */;
+			targetProxy = 2AA6F6392FAAD2E9005805D5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		380CC3CB2FAABE0B00D5CB37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5LCPB3DDWV;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RallySnap;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcel.RallySnap;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcel.RallySnap.watchapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		380CC3CC2FAABE0B00D5CB37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5LCPB3DDWV;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RallySnap;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcel.RallySnap;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcel.RallySnap.watchapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
 		54E994762FA7A278003BCD9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -253,10 +433,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6LL856622C;
+				DEVELOPMENT_TEAM = 5LCPB3DDWV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RallySnap/Info.plist;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize sessions by place.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
@@ -271,7 +451,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.akbar.RallySnap;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcel.RallySnap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -290,10 +470,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6LL856622C;
+				DEVELOPMENT_TEAM = 5LCPB3DDWV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RallySnap/Info.plist;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to take video recordings.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "RallySnap uses your location to organize sessions by place.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio for your videos.";
@@ -308,7 +488,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.akbar.RallySnap;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcel.RallySnap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -323,6 +503,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		380CC3CA2FAABE0B00D5CB37 /* Build configuration list for PBXNativeTarget "RallySnap Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				380CC3CB2FAABE0B00D5CB37 /* Debug */,
+				380CC3CC2FAABE0B00D5CB37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		54E994682FA7A277003BCD9F /* Build configuration list for PBXProject "RallySnap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
