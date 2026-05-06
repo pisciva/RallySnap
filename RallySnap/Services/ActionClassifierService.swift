@@ -8,17 +8,15 @@ class ActionClassifierService {
     private let frameSkip = 3
     private let confidenceThreshold: Float = 0.85
     private let clipCooldown: TimeInterval = 3.0
-    private let clipLookbackSeconds: Double = 4.0
 
-    // Keep every frame so 30fps playback matches real-time capture speed.
+    /// How far back the rolling ring keeps frames for clip extraction.
+    /// Watch can request up to this many seconds.
+    private let maxLookbackSeconds: Double = 10.0
     private let clipFrameKeepEvery = 1
 
     private let model: actionClassifier
     private var poseWindow: [MLMultiArray] = []
 
-    // Hold COPIED pixel buffers, not the original sample buffer references —
-    // holding originals starves AVFoundation's capture buffer pool and
-    // freezes frame delivery after a few seconds.
     private var clipFrames: [(pixelBuffer: CVPixelBuffer, time: Date)] = []
     private var lastClipAt: Date = .distantPast
     private var frameCount = 0
@@ -43,8 +41,6 @@ class ActionClassifierService {
         return copy
     }
 
-    /// Allocate our own pixel buffer and memcpy the source's pixels into it.
-    /// This frees the original sample buffer back to the capture pool.
     private func deepCopyPixelBuffer(_ source: CVPixelBuffer) -> CVPixelBuffer? {
         let width = CVPixelBufferGetWidth(source)
         let height = CVPixelBufferGetHeight(source)
@@ -62,16 +58,13 @@ class ActionClassifierService {
         CVPixelBufferLockBaseAddress(source, .readOnly)
         CVPixelBufferLockBaseAddress(dst, [])
 
-        let srcAddr = CVPixelBufferGetBaseAddress(source)
-        let dstAddr = CVPixelBufferGetBaseAddress(dst)
-        let bytes = CVPixelBufferGetDataSize(source)
-        if let s = srcAddr, let d = dstAddr {
-            memcpy(d, s, bytes)
+        if let s = CVPixelBufferGetBaseAddress(source),
+           let d = CVPixelBufferGetBaseAddress(dst) {
+            memcpy(d, s, CVPixelBufferGetDataSize(source))
         }
 
         CVPixelBufferUnlockBaseAddress(dst, [])
         CVPixelBufferUnlockBaseAddress(source, .readOnly)
-
         return dst
     }
 
@@ -80,16 +73,14 @@ class ActionClassifierService {
 
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        // Keep a copied frame for clip building every Nth frame.
         if frameCount % clipFrameKeepEvery == 0,
            let copy = deepCopyPixelBuffer(pixelBuffer) {
             let now = Date()
             clipFrames.append((copy, now))
-            let cutoff = now.addingTimeInterval(-clipLookbackSeconds - 1)
+            let cutoff = now.addingTimeInterval(-maxLookbackSeconds - 1)
             clipFrames.removeAll { $0.time < cutoff }
         }
 
-        // Only run Vision+ML every Nth frame.
         guard frameCount % frameSkip == 0 else { return }
 
         let request = VNDetectHumanBodyPoseRequest()
@@ -129,25 +120,39 @@ class ActionClassifierService {
 
             lastClipAt = Date()
             savingClip = true
-            saveClip(action: label)
+            saveClip(action: label, lookback: 4.0)
 
         } catch {
             print("AI prediction error: \(error)")
         }
     }
 
-    private func saveClip(action: String) {
-        let cutoff = Date().addingTimeInterval(-clipLookbackSeconds)
+    /// Public manual save — called by the Watch via PhoneConnectivityManager.
+    /// Saves the last `lookback` seconds (clamped to maxLookbackSeconds) as a clip.
+    func saveManualClip(lookback: Double) {
+        let actualLookback = min(max(lookback, 1.0), maxLookbackSeconds)
+        guard !savingClip else {
+            print("AI: manual clip ignored — already saving")
+            return
+        }
+        savingClip = true
+        lastClipAt = Date()
+        saveClip(action: "manual", lookback: actualLookback)
+    }
+
+    private func saveClip(action: String, lookback: Double) {
+        let cutoff = Date().addingTimeInterval(-lookback)
         let frames = clipFrames
             .filter { $0.time >= cutoff }
             .map { $0.pixelBuffer }
 
         guard !frames.isEmpty else {
+            print("AI: ❌ no frames to save")
             savingClip = false
             return
         }
 
-        print("AI: 💾 saving clip '\(action)' with \(frames.count) frames")
+        print("AI: 💾 saving '\(action)' clip — \(frames.count) frames, \(lookback)s lookback")
 
         ClipSavingService.shared.saveClip(frames: frames, action: action) { clip in
             DispatchQueue.main.async {
